@@ -48,7 +48,7 @@ def index():
 def hazirla():
     video_url = request.form.get('url')
     ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        'format': 'best',
         'outtmpl': 'indirilen_video.mp4',
         'cookiefile': 'cookies.txt',
         'quiet': True,
@@ -63,3 +63,4 @@ def hazirla():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
