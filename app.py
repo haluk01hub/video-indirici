@@ -52,7 +52,15 @@ def hazirla():
         'outtmpl': 'indirilen_video.mp4',
         'cookiefile': 'cookies.txt',
         'quiet': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'no_warnings': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'referer': 'https://www.google.com/',
+        'http_headers': {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-us,en;q=0.5',
+            'Sec-Fetch-Mode': 'navigate',
+        }
+    }
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -63,4 +71,5 @@ def hazirla():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
 
