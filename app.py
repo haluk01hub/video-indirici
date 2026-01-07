@@ -81,9 +81,9 @@ def hazirla():
     url = request.form.get('url')
     try:
         # En iyi hazır birleşik formatı (best) çekiyoruz
-        ydl_opts = ydl_opts = {
-    'format': 'best',
-    'cookiefile': 'cookies.txt',  # İşte bu satır engeli aşacak anahtar
+        ydl_opts = ydl_opts = ydl_opts = {
+    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best', # Daha esnek format seçimi
+    'cookiefile': 'cookies.txt',
     'quiet': True,
     'no_warnings': True,
     'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -98,3 +98,4 @@ def hazirla():
 if __name__ == '__main__':
 
     app.run(debug=True)
+
