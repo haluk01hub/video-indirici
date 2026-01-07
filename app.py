@@ -4,42 +4,38 @@ import os
 
 app = Flask(__name__)
 
-# Modern ve Reklam Alanlı Tasarım
+# Reklam Kodun Yerleştirilmiş Modern Tasarım
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video İndirici - Hızlı ve Ücretsiz</title>
+    <title>Video İndirme Merkezi</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: white; text-align: center; padding: 50px; }
-        .container { max-width: 600px; margin: auto; background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input { width: 80%; padding: 12px; border-radius: 5px; border: none; margin-bottom: 20px; }
-        button { padding: 12px 25px; background-color: #ff0000; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #cc0000; }
-        .reklam { margin: 20px 0; min-height: 100px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; border: 1px dashed #555; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f0f0f; color: #ffffff; text-align: center; padding: 20px; }
+        .card { max-width: 500px; margin: 40px auto; background: #1a1a1a; padding: 30px; border-radius: 20px; border: 1px solid #333; }
+        input { width: 90%; padding: 15px; border-radius: 10px; border: 1px solid #444; background: #000; color: white; margin-bottom: 20px; }
+        button { width: 95%; padding: 15px; background: linear-gradient(45deg, #ff0000, #ff4444); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .footer { margin-top: 50px; color: #555; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Video İndirici</h1>
-        <p>YouTube, Instagram, TikTok videolarını anında indir.</p>
-        
-        <div class="reklam">
-            <p style="color: #666;">Reklam Alanı</p>
-        </div>
+    <div class="card">
+        <h2>🚀 Video İndirici</h2>
+        <p style="color: #aaa;">YouTube, Instagram ve TikTok videolarını indir!</p>
 
         <form action="/hazirla" method="post">
-            <input type="text" name="url" placeholder="Video linkini buraya yapıştır..." required>
-            <br>
-            <button type="submit">VİDEOYU HAZIRLA</button>
+            <input type="text" name="url" placeholder="Video linkini yapıştır..." required>
+            <button type="submit">VİDEOYU İNDİR</button>
         </form>
-
-        <div class="reklam">
-            <p style="color: #666;">Reklam Alanı</p>
-        </div>
     </div>
+
+    <div class="footer">
+        © 2026 Video İndirme Hizmeti
+    </div>
+
+    <script src="https://pl28425051.effectivegatecpm.com/05/7c/5d/057c5d1e6ff12fbdc9c2341da887dd7c.js"></script>
 </body>
 </html>
 '''
@@ -51,23 +47,19 @@ def index():
 @app.route('/hazirla', methods=['post'])
 def hazirla():
     video_url = request.form.get('url')
-    
-    # FORMAT HATASINI ÇÖZEN AYARLAR
     ydl_opts = {
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         'outtmpl': 'indirilen_video.mp4',
         'cookiefile': 'cookies.txt',
         'quiet': True,
-        'no_warnings': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
-    
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
         return send_file('indirilen_video.mp4', as_attachment=True)
     except Exception as e:
-        return f"Hata oluştu: {str(e)}"
+        return f"Hata: {str(e)}"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
