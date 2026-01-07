@@ -81,7 +81,13 @@ def hazirla():
     url = request.form.get('url')
     try:
         # En iyi hazır birleşik formatı (best) çekiyoruz
-        ydl_opts = {'format': 'best', 'quiet': True}
+        ydl_opts = ydl_opts = {
+    'format': 'best',
+    'cookiefile': 'cookies.txt',  # İşte bu satır engeli aşacak anahtar
+    'quiet': True,
+    'no_warnings': True,
+    'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             link = info.get('url')
@@ -90,4 +96,5 @@ def hazirla():
         return f"Hata: {e}"
 
 if __name__ == '__main__':
+
     app.run(debug=True)
