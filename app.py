@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# ANA SAYFA - Tasarım Mobilde Daha Şık
+# ANA SAYFA
 INDEX_HTML = '''
 <!DOCTYPE html>
 <html lang="tr">
@@ -16,7 +16,7 @@ INDEX_HTML = '''
         body { font-family: 'Inter', sans-serif; background: #080808; color: white; text-align: center; padding: 10px; margin: 0; }
         .card { max-width: 400px; margin: 40px auto; background: #121212; padding: 25px; border-radius: 20px; border: 1px solid #222; }
         input { width: 100%; box-sizing: border-box; padding: 18px; border-radius: 12px; border: 1px solid #333; background: #000; color: white; margin-bottom: 20px; font-size: 16px; outline: none; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-bottom: 12px; font-size: 16px; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-bottom: 12px; font-size: 16px; transition: 0.3s; }
         .btn-normal { background: #222; color: #888; }
         .btn-premium { background: linear-gradient(90deg, #ff0000, #b30000); color: white; box-shadow: 0 4px 15px rgba(255,0,0,0.3); }
         h1 { font-size: 24px; letter-spacing: -1px; }
@@ -52,8 +52,10 @@ WAIT_HTML = '''
         .box { max-width: 400px; margin: 0 auto; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #ff0000; }
         #timer { font-size: 50px; color: #ff0000; font-weight: bold; margin: 20px 0; }
         .info-text { color: #aaa; margin-bottom: 20px; font-size: 15px; }
-        #indir-btn { display: none; width: 100%; padding: 20px; background: #28a745; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .ad-button { display: inline-block; padding: 15px 25px; background: #fff; color: #000; text-decoration: none; border-radius: 10px; font-weight: bold; margin-bottom: 20px; }
+        .btn-action { width: 100%; padding: 20px; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; text-decoration: none; display: block; }
+        #indir-btn { display: none; background: #28a745; color: white; }
+        .ad-button { background: #fff; color: #000; }
+        .btn-home { background: #333; color: #fff; font-size: 14px; padding: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -63,17 +65,19 @@ WAIT_HTML = '''
         
         <a href="https://www.effectivegatecpm.com/et6wj2f9?key=62e749d77eb3f45ce41046a596605850" 
            target="_blank" 
-           class="ad-button" 
+           class="btn-action ad-button" 
            onclick="startTimer()">
            VİDEOYU İZLE VE İNDİR
         </a>
 
         <div id="timer" style="display:none;">10</div>
 
-        <form action="/indir_final" method="post">
+        <form action="/indir_final" method="post" id="downloadForm">
             <input type="hidden" name="url" value="{{ url }}">
-            <button type="submit" id="indir-btn">📥 HD FİLİGRANSIZ İNDİR</button>
+            <button type="submit" id="indir-btn" class="btn-action" onclick="showHomeBtn()">📥 HD FİLİGRANSIZ İNDİR</button>
         </form>
+
+        <a href="/" id="home-btn" class="btn-action btn-home" style="display:none;">🏠 Başka Video İndir</a>
     </div>
 
     <script>
@@ -92,12 +96,19 @@ WAIT_HTML = '''
                 }
             }, 1000);
         }
+
+        function showHomeBtn() {
+            // Kullanıcı indir butonuna bastığında "Başka Video İndir" butonu görünür hale gelsin
+            setTimeout(() => {
+                document.getElementById('home-btn').style.display = 'block';
+            }, 2000);
+        }
     </script>
 </body>
 </html>
 '''
 
-# ... (İndirme fonksiyonları aynı kalacak)
+# --- İndirme Fonksiyonları ---
 @app.route('/')
 def index(): return render_template_string(INDEX_HTML)
 
@@ -109,3 +120,16 @@ def islem():
 
 @app.route('/indir_final', methods=['POST'])
 def indir_final():
+    url = request.form.get('url'); return indir_islem(url, 'best')
+
+def indir_islem(url, kalite):
+    ydl_opts = {'format': kalite, 'outtmpl': 'video.mp4', 'cookiefile': 'cookies.txt', 'quiet': True, 'nocheckcertificate': True, 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'}
+    try:
+        if os.path.exists('video.mp4'): os.remove('video.mp4')
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl: ydl.download([url])
+        return send_file('video.mp4', as_attachment=True)
+    except Exception as e: return f"Hata: {str(e)}"
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
